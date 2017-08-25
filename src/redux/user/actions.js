@@ -63,8 +63,29 @@ function getUserData(dispatch) {
   */
 export function login(formData = {}, verifyEmail = false) {
   if (Firebase === null) {
-    return () => new Promise((resolve, reject) =>
-      reject({ message: ErrorMessages.invalidFirebase }));
+    return () => new Promise((resolve, reject) => {
+      // Reassign variables for eslint ;)
+      const email = formData.Email || '';
+      const password = formData.Password || '';
+
+      if (!email || !password) {
+        reject({ message: 'Need username and password.' });
+      }
+      // Update Login Creds in AsyncStorage
+      if (email && password) {
+        const credsFromStorage = getCredentialsFromStorage();
+        const emailValid = credsFromStorage.email;
+        const passwordValid = credsFromStorage.password;
+        if (email === emailValid && password === passwordValid) {
+          resolve({
+            type: 'USER_LOGIN',
+            data: {},
+          });
+        } else {
+          reject({ message: 'Invalid credentials !' });
+        }
+      }
+    });
   }
 
   // Reassign variables for eslint ;)

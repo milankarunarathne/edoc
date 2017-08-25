@@ -9,7 +9,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   StyleSheet,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
@@ -42,10 +41,9 @@ class Authenticate extends Component {
 
   render = () => (
     <View style={[AppStyles.containerCentered, AppStyles.container, styles.background]}>
-      <Image
-        source={require('../../images/logo.png')}
-        style={[styles.logo]}
-      />
+      <View style={[AppStyles.appTitleContainer]}>
+        <Text style={[AppStyles.appTitle]}>e-doc</Text>
+      </View>
 
       <View style={[AppStyles.row, AppStyles.paddingHorizontal]}>
         <View style={[AppStyles.flex1]}>

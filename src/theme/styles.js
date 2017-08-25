@@ -13,6 +13,18 @@ export default {
   appContainer: {
     backgroundColor: '#000',
   },
+  appTitleContainer: {
+    height: 200,
+  },
+  appTitle: {
+    fontFamily: Fonts.base.family,
+    fontSize: 60,
+    lineHeight: 100,
+    color: '#fff',
+    fontWeight: '300',
+    height: 100,
+    marginTop: 50,
+  },
 
   // Default
   container: {

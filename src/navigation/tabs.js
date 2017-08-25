@@ -16,9 +16,6 @@ import { TabIcon } from '@ui/';
 import { NavbarMenuButton } from '@containers/ui/NavbarMenuButton/NavbarMenuButtonContainer';
 
 // Scenes
-import Placeholder from '@components/general/Placeholder';
-import Error from '@components/general/Error';
-import StyleGuide from '@containers/StyleGuideView';
 import Recipes from '@containers/recipes/Browse/BrowseContainer';
 import RecipeView from '@containers/recipes/RecipeView';
 
@@ -37,51 +34,24 @@ const scenes = (
     <Scene
       {...navbarPropsTabs}
       key={'recipes'}
-      title={'Recipes'}
+      title={'Patients'}
       icon={props => TabIcon({ ...props, icon: 'search' })}
     >
       <Scene
         {...navbarPropsTabs}
         key={'recipesListing'}
         component={Recipes}
-        title={'Recipes'}
-        analyticsDesc={'Recipes: Browse Recipes'}
+        title={'Patients'}
+        analyticsDesc={'Patients: Browse Patients'}
       />
       <Scene
         {...AppConfig.navbarProps}
         key={'recipeView'}
         component={RecipeView}
-        getTitle={props => ((props.title) ? props.title : 'View Recipe')}
-        analyticsDesc={'RecipeView: View Recipe'}
+        getTitle={props => ((props.title) ? props.title : 'View Patient')}
+        analyticsDesc={'RecipeView: View Patient'}
       />
     </Scene>
-
-    <Scene
-      key={'timeline'}
-      {...navbarPropsTabs}
-      title={'Coming Soon'}
-      component={Placeholder}
-      icon={props => TabIcon({ ...props, icon: 'timeline' })}
-      analyticsDesc={'Placeholder: Coming Soon'}
-    />
-
-    <Scene
-      key={'error'}
-      {...navbarPropsTabs}
-      title={'Example Error'}
-      component={Error}
-      icon={props => TabIcon({ ...props, icon: 'error' })}
-      analyticsDesc={'Error: Example Error'}
-    />
-
-    <Scene
-      key={'styleGuide'}
-      {...navbarPropsTabs}
-      title={'Style Guide'}
-      component={StyleGuide}
-      icon={props => TabIcon({ ...props, icon: 'speaker-notes' })}
-      analyticsDesc={'StyleGuide: Style Guide'}
-    />
   </Scene>
 );
 

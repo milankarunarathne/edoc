@@ -108,7 +108,7 @@ class RecipeView extends Component {
 
         {ingredients ?
           <Card>
-            <Text h2>Ingredients</Text>
+            <Text h2>Contact Details</Text>
             {this.renderIngredients(ingredients)}
           </Card>
         : null}

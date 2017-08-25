@@ -11,14 +11,14 @@ import * as RecipeActions from '../recipes/actions';
 /**
   * Get Login Credentials from AsyncStorage
   */
-async function getCredentialsFromStorage() {
-  const values = await AsyncStorage.getItem('api/credentials');
-  const jsonValues = JSON.parse(values);
-
-  // Return credentials from storage, or an empty object
-  if (jsonValues.email || jsonValues.password) return jsonValues;
-  return {};
-}
+// async function getCredentialsFromStorage() {
+//   const values = await AsyncStorage.getItem('api/credentials');
+//   const jsonValues = JSON.parse(values);
+//
+//   // Return credentials from storage, or an empty object
+//   if (jsonValues.email || jsonValues.password) return jsonValues;
+//   return {};
+// }
 
 /**
   * Save Login Credentials to AsyncStorage

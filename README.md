@@ -5,11 +5,11 @@
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/mcnamee/react-native-starter-app.svg?style=flat-square)](https://github.com/mcnamee/react-native-starter-app/issues-closed)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/mcnamee/react-native-starter-app.svg?style=flat-square)](https://github.com/mcnamee/react-native-starter-app/issues-pr)
 
-![alt text](/docs/rnsk-logo.jpg "React Native Starter Kit")
+![alt text](/docs/rnsk-logo.jpg "e-doc")
 
-# React Native Starter Kit
+# e-doc
 
-React Native Starter Kit helps you get started with React Native. It contains a bunch of helpful components, building blocks and basic structure to allow you to jump straight into building an app.
+e-doc helps you get started with React Native. It contains a bunch of helpful components, building blocks and basic structure to allow you to jump straight into building an app.
 
 What's more, it's now integrated with [Firebase](https://firebase.google.com/), to help you kick start your next full-stack product.
 

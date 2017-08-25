@@ -34,135 +34,99 @@ async function removeCredentialsFromStorage() {
   await AsyncStorage.removeItem('api/credentials');
 }
 
+async function getPatientIdFromStorage() {
+  const values = await AsyncStorage.getItem('api/patientId');
+  let jsonValues = {};
+  if (values) {
+    jsonValues = JSON.parse(values);
+  }
+
+  if (jsonValues.patientId) return jsonValues.patientId;
+  return 0;
+}
+
+async function savePatientIdToStorage(patientId = 0) {
+  await AsyncStorage.setItem('api/patientId', JSON.stringify({ patientId }));
+}
+
+/**
+  * Save this User's Details
+  */
+async function saveUserData(userData) {
+  await AsyncStorage.setItem(`api/patient/${userData.email}`, JSON.stringify(userData));
+}
+
 /**
   * Get this User's Details
   */
-function getUserData(dispatch) {
-  if (Firebase === null) {
-    return () => new Promise((resolve, reject) =>
-      reject({ message: ErrorMessages.invalidFirebase }));
-  }
+async function getUserData(email) {
+  const values = await AsyncStorage.getItem(`api/patient/${email}`);
+  const userData = JSON.parse(values);
 
-  const UID = Firebase.auth().currentUser.uid;
-  if (!UID) return false;
-
-  const ref = FirebaseRef.child(`users/${UID}`);
-
-  return ref.on('value', (snapshot) => {
-    const userData = snapshot.val() || [];
-
-    return dispatch({
-      type: 'USER_DETAILS_UPDATE',
-      data: userData,
-    });
-  });
+  if (userData.patientId) return userData;
+  return {};
 }
 
 /**
   * Login to Firebase with Email/Password
   */
-export function login(formData = {}, verifyEmail = false) {
-  if (Firebase === null) {
-    return () => new Promise((resolve, reject) => {
-      // Reassign variables for eslint ;)
-      const email = formData.Email || '';
-      const password = formData.Password || '';
+export function login(formData = {}) {
+  console.log('login', formData);
+  return () => new Promise((resolve, reject) => {
+    // Reassign variables for eslint ;)
+    const email = formData.Email || '';
+    const password = formData.Password || '';
 
-      if (!email || !password) {
-        reject({ message: 'Need username and password.' });
-      }
-      // Update Login Creds in AsyncStorage
-      if (email && password) {
-        const credsFromStorage = getCredentialsFromStorage();
-        const emailValid = credsFromStorage.email;
-        const passwordValid = credsFromStorage.password;
+    if (!email || !password) {
+      reject({ message: 'Need username and password.' });
+    }
+    // Update Login Creds in AsyncStorage
+    if (email && password) {
+      getUserData(email).then((userData) => {
+        console.log('111', userData);
+        const emailValid = userData.email;
+        const passwordValid = userData.password;
         if (email === emailValid && password === passwordValid) {
+          saveCredentialsToStorage(emailValid, passwordValid);
           resolve({
             type: 'USER_LOGIN',
-            data: {},
+            data: userData,
           });
         } else {
           reject({ message: 'Invalid credentials !' });
         }
-      }
-    });
-  }
-
-  // Reassign variables for eslint ;)
-  let email = formData.Email || '';
-  let password = formData.Password || '';
-
-  return async (dispatch) => {
-    // When no credentials passed in, check AsyncStorage for existing details
-    if (!email || !password) {
-      const credsFromStorage = await getCredentialsFromStorage();
-      if (!email) email = credsFromStorage.email;
-      if (!password) password = credsFromStorage.password;
+      }).catch(() => {
+        reject({ message: 'User isnt Registered' });
+      });
     }
-
-    // Update Login Creds in AsyncStorage
-    if (email && password) saveCredentialsToStorage(email, password);
-
-    // We're ready - let's try logging them in
-    return Firebase.auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((res) => {
-        if (res && res.uid) {
-          // Update last logged in data
-          FirebaseRef.child(`users/${res.uid}`).update({
-            lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
-          });
-
-          // Send verification Email - usually used on first login
-          if (verifyEmail) {
-            Firebase.auth().currentUser
-              .sendEmailVerification()
-              .catch(() => console.log('Verification email failed to send'));
-          }
-
-          // Get Favourites
-          RecipeActions.getFavourites(dispatch);
-
-          // Get User Data
-          getUserData(dispatch);
-        }
-
-        // Send to Redux
-        return dispatch({
-          type: 'USER_LOGIN',
-          data: res,
-        });
-      }).catch((err) => { throw err; });
-  };
+  });
 }
 
 /**
   * Sign Up to Firebase
   */
 export function signUp(formData = {}) {
-  if (Firebase === null) {
-    return () => new Promise((resolve, reject) =>
-      reject({ message: ErrorMessages.invalidFirebase }));
-  }
+  console.log('signUp', formData);
+  return () => new Promise((resolve) => {
+    const email = formData.Email || '';
+    const password = formData.Password || '';
+    const firstName = formData.FirstName || '';
+    const lastName = formData.LastName || '';
 
-  const email = formData.Email || '';
-  const password = formData.Password || '';
-  const firstName = formData.FirstName || '';
-  const lastName = formData.LastName || '';
-
-  return () => Firebase.auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then((res) => {
-      // Setup/Send Details to Firebase database
-      if (res && res.uid) {
-        FirebaseRef.child(`users/${res.uid}`).set({
-          firstName,
-          lastName,
-          signedUp: Firebase.database.ServerValue.TIMESTAMP,
-          lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
-        });
-      }
+    const patientId = getPatientIdFromStorage() + 1;
+    saveUserData({
+      patientId,
+      email,
+      password,
+      firstName,
+      lastName,
     });
+    savePatientIdToStorage(patientId).then(() => {
+      resolve({ message: 'Successfully Registered !.' });
+    }).catch(() => {
+      resolve({ message: 'Cant save user.' });
+    });
+  });
 }
 
 /**

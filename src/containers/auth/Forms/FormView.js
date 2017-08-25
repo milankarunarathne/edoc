@@ -156,7 +156,7 @@ class AuthForm extends Component {
     */
   validPassword = FormValidation.refinement(
     FormValidation.String, (password) => {
-      if (password.length < 8) return false; // Too short
+      if (password.length < 4) return false; // Too short
       if (password.search(/\d/) === -1) return false; // No numbers
       if (password.search(/[a-zA-Z]/) === -1) return false; // No letters
       return true;
@@ -198,6 +198,7 @@ class AuthForm extends Component {
       if (passwordsDontMatch) return false;
     }
 
+    console.log('handleSubmit::', formData);
     // Form is valid
     if (formData) {
       this.setState({ form_values: formData }, () => {
